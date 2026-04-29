@@ -1,0 +1,12 @@
+<h2>Device Dashboard</h2>
+
+<div *ngFor="let d of devices" style="border:1px solid #ccc; padding:10px; margin:10px;">
+  <h3>{{ d.name }}</h3>
+  <p>Type: {{ d.type }}</p>
+  <p>Status: 
+    <span [style.color]="d.status === 'online' ? 'green' : 'red'">
+      {{ d.status }}
+    </span>
+  </p>
+  <p>Battery: {{ d.battery }}%</p>
+</div>
