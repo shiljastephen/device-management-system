@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket Test</title>
+</head>
+<body>
+  <h2>Device Updates</h2>
+
+  <ul id="deviceList"></ul>
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io("http://localhost:5000");
+
+    const deviceId = "69f04ab34dce40cb0c85c871";
+
+    const list = document.getElementById("deviceList");
+
+    socket.on("connect", () => {
+      console.log("Connected:", socket.id);
+
+      // register device
+      socket.emit("register-device", deviceId);
+    });
+
+    // send heartbeat
+    setInterval(() => {
+      socket.emit("heartbeat", {
+        deviceId: deviceId,
+        battery: Math.floor(Math.random() * 100)
+      });
+    }, 5000);
+
+    // display updates on screen
+    socket.on("deviceUpdated", (data) => {
+      console.log("Updated:", data);
+
+      const item = document.createElement("li");
+
+      item.innerHTML = `
+        <b>${data.name}</b> |
+        Status: ${data.status} |
+        Battery: ${data.battery}% |
+        Last Seen: ${new Date(data.lastSeen).toLocaleTimeString()}
+      `;
+
+      list.prepend(item); // latest on top
+    });
+  </script>
+</body>
+</html>
